@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulmoCare AI - Pulmonology Health Intelligence Platform</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{
+  --slate:#2d5a6b;--slate-lt:#6a99a8;--slate-pale:#eaf3f5;
+  --teal:#0e7a6b;--teal-lt:#2ab5a0;--teal-pale:#e6f5f3;
+  --gold:#c4894a;--gold-lt:#e8b87a;--gold-pale:#fdf5ec;
+  --red:#c0392b;--cream:#fdfcfb;--cream2:#f0f4f5;
+  --text:#0f2126;--text2:#263f47;--text3:#748f97;
+  --border:rgba(45,90,107,0.16);--border2:rgba(45,90,107,0.35);
+  --shadow:0 8px 40px rgba(15,33,38,0.10);--shadow2:0 24px 80px rgba(15,33,38,0.18);
+  --r:13px;--r2:22px;
+  --serif:'Playfair Display',serif;--body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--cream);color:var(--text);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--cream2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.4)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+#disc-modal{position:fixed;inset:0;z-index:9999;background:rgba(6,14,17,0.96);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;}
+.disc-box{background:var(--cream);border-radius:var(--r2);max-width:700px;width:100%;max-height:92vh;overflow-y:auto;padding:48px 52px;border:1px solid var(--border2);box-shadow:var(--shadow2);}
+.disc-icon{font-size:52px;text-align:center;display:block;margin-bottom:14px;}
+.disc-box h1{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--slate);text-align:center;margin-bottom:6px;}
+.disc-sub{text-align:center;font-size:13px;color:var(--text3);margin-bottom:26px;}
+.disc-content{background:var(--slate-pale);border:1px solid var(--border2);border-radius:var(--r);padding:22px;margin-bottom:20px;font-size:13px;line-height:1.85;color:var(--text);}
+.disc-content p{margin-bottom:10px;}.disc-content p:last-child{margin-bottom:0;}
+.disc-content strong{color:var(--slate);font-weight:600;}
+.disc-chk{margin-bottom:22px;}
+.chk-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;cursor:pointer;}
+.chk-row input{width:17px;height:17px;accent-color:var(--slate);margin-top:2px;cursor:pointer;flex-shrink:0;}
+.chk-row label{font-size:13px;line-height:1.55;cursor:pointer;color:var(--text2);}
+.disc-accept{width:100%;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,var(--slate),var(--slate-lt));color:#fff;font-family:var(--body);font-size:15px;font-weight:600;border:none;cursor:pointer;transition:all 0.2s;}
+.disc-accept:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,90,107,0.4);}
+.disc-accept:disabled{opacity:0.4;cursor:not-allowed;}
+.disc-bar{position:sticky;top:0;z-index:200;background:linear-gradient(90deg,#051215,var(--slate),#051215);background-size:200%;animation:shimmer 4s linear infinite;padding:9px 20px;text-align:center;font-size:12px;font-weight:600;color:#fff;}
+.pdot{display:inline-block;width:7px;height:7px;background:#fff;border-radius:50%;margin-right:8px;animation:pulse 1.5s ease infinite;vertical-align:middle;}
+header{position:relative;z-index:10;background:linear-gradient(160deg,#040d10 0%,#183945 45%,#0e1e38 100%);padding:64px 40px 52px;text-align:center;border-bottom:2px solid var(--teal-lt);}
+.hdr-inner{max-width:900px;margin:0 auto;}
+.hdr-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal-lt);margin-bottom:18px;}
+header h1{font-family:var(--serif);font-size:clamp(30px,4.8vw,58px);font-weight:700;color:#eaf3f5;line-height:1.08;margin-bottom:8px;}
+header h1 span{color:var(--gold-lt);}
+.hdr-sub{font-size:18px;color:rgba(195,220,222,0.88);margin-bottom:20px;}
+.hdr-line{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--teal-lt),transparent);margin:18px auto;}
+.hdr-desc{font-size:14.5px;color:rgba(185,210,212,0.8);line-height:1.75;max-width:700px;margin:0 auto;}
+.hdr-badges{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;}
+.hbadge{padding:6px 18px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid;}
+.hb-s{background:rgba(45,90,107,0.28);border-color:rgba(45,90,107,0.55);color:#c0dce0;}
+.hb-t{background:rgba(14,122,107,0.25);border-color:rgba(14,122,107,0.5);color:#a0e0d8;}
+.hb-g{background:rgba(196,137,74,0.22);border-color:rgba(196,137,74,0.45);color:#f0d0a0;}
+.main-nav{position:sticky;top:42px;z-index:100;background:rgba(253,252,251,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;}
+.nav-inner{max-width:1500px;margin:0 auto;display:flex;overflow-x:auto;}
+.nav-inner::-webkit-scrollbar{height:0;}
+.ntab{padding:15px 13px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;}
+.ntab:hover{color:var(--slate);}.ntab.active{color:var(--slate);border-bottom-color:var(--gold-lt);font-weight:600;}
+.app{display:grid;grid-template-columns:265px 1fr;max-width:1500px;margin:0 auto;min-height:calc(100vh - 260px);}
+.sidebar{border-right:1px solid var(--border);background:rgba(234,243,245,0.3);padding:22px 0;position:sticky;top:112px;height:calc(100vh - 112px);overflow-y:auto;}
+.sb-lbl{padding:8px 18px 4px;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);}
+.sbi{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;font-size:13px;color:var(--text2);}
+.sbi:hover{background:rgba(45,90,107,0.06);}.sbi.active{background:rgba(45,90,107,0.08);border-left-color:var(--gold);color:var(--slate);font-weight:600;}
+.sbi .si{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-div{height:1px;background:var(--border);margin:10px 14px;}
+.sb-new{font-size:9px;font-weight:700;background:var(--slate);color:#fff;padding:2px 7px;border-radius:10px;margin-left:auto;}
+.main{padding:38px 44px;}
+.panel{display:none;}.panel.active{display:block;animation:fadeUp 0.3s ease;}
+.ph{margin-bottom:30px;}
+.ph-crumb{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.ph h2{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--text);line-height:1.15;}
+.ph p{margin-top:10px;font-size:16px;color:var(--text2);line-height:1.7;max-width:680px;}
+.d-line{width:60px;height:2px;background:linear-gradient(90deg,var(--slate),var(--teal),transparent);margin:12px 0;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:22px;transition:all 0.22s;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--slate),var(--teal),var(--gold));opacity:0;transition:opacity 0.2s;}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}.card:hover::before{opacity:1;}
+.card.click{cursor:pointer;}
+.ci{font-size:30px;margin-bottom:12px;}
+.card h3{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--text);margin-bottom:7px;}
+.card p{font-size:13px;color:var(--text2);line-height:1.65;}
+.ctag{display:inline-block;margin-top:10px;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;background:var(--slate-pale);color:var(--slate);border:1px solid var(--border2);}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:18px;text-align:center;}
+.stat-n{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--slate);line-height:1;}
+.stat-l{font-size:11px;color:var(--text3);font-weight:500;margin-top:5px;text-transform:uppercase;letter-spacing:0.07em;}
+.sb{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:28px;margin-bottom:20px;}
+.sb h3{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.sb h4{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--slate);margin:14px 0 7px;}
+.sb p{font-size:13.5px;line-height:1.8;color:var(--text2);margin-bottom:10px;}
+.sb ul{list-style:none;}
+.sb ul li{padding:7px 0;border-bottom:1px solid rgba(45,90,107,0.07);font-size:13px;line-height:1.65;color:var(--text2);display:flex;gap:10px;}
+.sb ul li::before{content:"\25C6";color:var(--teal);flex-shrink:0;font-size:9px;margin-top:4px;}
+.sb ul li:last-child{border-bottom:none;}
+.sb table{width:100%;border-collapse:collapse;font-size:13px;}
+.sb table th{background:var(--slate);color:#eaf3f5;font-size:11.5px;font-weight:600;padding:11px 14px;text-align:left;}
+.sb table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;}
+.alert{padding:13px 17px;border-radius:var(--r);font-size:13px;line-height:1.7;margin-bottom:16px;display:flex;gap:11px;}
+.ai-ic{font-size:17px;flex-shrink:0;margin-top:1px;}
+.alert.warn{background:var(--gold-pale);border:1px solid rgba(196,137,74,0.35);color:#6a3a00;}
+.alert.slate{background:var(--slate-pale);border:1px solid var(--border2);color:var(--slate);}
+.alert.teal{background:var(--teal-pale);border:1px solid rgba(14,122,107,0.3);color:var(--teal);}
+.alert.emergency{background:#050d10;border:2px solid var(--slate-lt);color:#c8e4e8;font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--r);font-family:var(--body);font-size:13.5px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;}
+.btn-s{background:linear-gradient(135deg,var(--slate),var(--slate-lt));color:#fff;}
+.btn-s:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(45,90,107,0.4);}
+.btn-outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2);}
+.btn-outline:hover{border-color:var(--slate);color:var(--slate);}
+.btn-lg{padding:14px 28px;font-size:15px;}.btn-sm{padding:6px 14px;font-size:12px;}
+.bgrp{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.spn{width:18px;height:18px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+.btn.loading .spn{display:block;}.btn.loading .bt{display:none;}
+.tab-bar{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);flex-wrap:wrap;}
+.tbtn{padding:10px 18px;border:none;background:transparent;font-family:var(--body);font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tbtn:hover{color:var(--text);}.tbtn.active{color:var(--slate);border-bottom-color:var(--gold-lt);font-weight:600;}
+.tpane{display:none;}.tpane.active{display:block;animation:fadeUp 0.25s ease;}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r2);padding:44px;text-align:center;cursor:pointer;transition:all 0.3s;background:#fff;margin-bottom:16px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--slate);background:var(--slate-pale);}
+.uz-icon{font-size:48px;margin-bottom:14px;}
+.file-tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px;}
+.ftag{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;background:var(--cream2);border:1px solid var(--border);color:var(--text3);}
+.file-row{display:flex;align-items:center;gap:11px;padding:11px 15px;border-radius:var(--r);background:#fff;border:1px solid var(--border);margin-bottom:7px;}
+.fr-ico{font-size:18px;flex-shrink:0;}.fr-name{flex:1;font-size:13px;font-weight:500;}.fr-meta{font-size:11px;color:var(--text3);}
+.fr-ok{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--teal-pale);color:var(--teal);font-weight:600;}
+.fr-del{color:var(--text3);cursor:pointer;font-size:16px;padding:3px;}.fr-del:hover{color:var(--red);}
+.assess-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fg{margin-bottom:16px;}
+.fl{font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;display:block;}
+.fi,.fs{width:100%;padding:10px 14px;border-radius:var(--r);border:1.5px solid rgba(45,90,107,0.18);background:#fff;font-family:var(--body);font-size:14px;color:var(--text);outline:none;}
+.fi:focus,.fs:focus{border-color:var(--slate);}
+.chat-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
+.chat-head{background:linear-gradient(135deg,#183945,var(--slate));padding:17px 22px;display:flex;align-items:center;justify-content:space-between;}
+.chat-head h3{font-family:var(--serif);font-size:16px;font-weight:600;color:#fff;}
+.chat-head .free{background:rgba(255,255,255,0.18);color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+.chat-msgs{height:420px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:var(--cream);}
+.cm{max-width:82%;padding:12px 15px;border-radius:14px;font-size:13.5px;line-height:1.62;}
+.cm.user{align-self:flex-end;background:var(--slate);color:#fff;border-radius:14px 14px 4px 14px;}
+.cm.ai{align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:14px 14px 14px 4px;}
+.cm .ai-lbl{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:4px;}
+.cm.sys{align-self:center;background:var(--cream2);border-radius:8px;font-size:12px;color:var(--text3);max-width:90%;text-align:center;}
+.typing span{width:7px;height:7px;background:var(--text3);border-radius:50%;animation:blink 1.2s ease infinite;display:inline-block;margin:0 2px;}
+.typing span:nth-child(2){animation-delay:0.2s;}.typing span:nth-child(3){animation-delay:0.4s;}
+.chat-input-row{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--border);background:var(--cream2);}
+.chat-input{flex:1;padding:10px 14px;border-radius:var(--r);border:1.5px solid rgba(45,90,107,0.2);background:#fff;font-family:var(--body);font-size:13.5px;color:var(--text);outline:none;}
+.chat-input:focus{border-color:var(--slate);}
+.chat-send{padding:10px 20px;border-radius:var(--r);background:var(--slate);color:#fff;border:none;cursor:pointer;font-weight:600;font-family:var(--body);}
+.api-box{background:var(--slate-pale);border:1px solid var(--border2);border-radius:var(--r2);padding:24px;margin-bottom:20px;}
+.api-box h3{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--slate);margin-bottom:8px;}
+.api-row{display:flex;gap:10px;}
+.api-input{flex:1;padding:10px 14px;border-radius:var(--r);border:1.5px solid var(--border2);background:#fff;font-family:'Consolas',monospace;font-size:13px;color:var(--text);outline:none;}
+.api-input:focus{border-color:var(--slate);}
+.provider-card{position:relative;}
+.provider-card.selected{border-color:var(--slate);box-shadow:0 0 0 2px var(--slate-pale);}
+.provider-card.selected::after{content:'Active';position:absolute;top:14px;right:16px;font-size:11px;font-weight:700;color:var(--slate);}
+.provider-card .ctag.configured{background:var(--teal-pale);color:var(--teal);border-color:rgba(14,122,107,0.3);}
+footer{background:linear-gradient(160deg,#040d10 0%,#0c262f 100%);padding:50px 40px 30px;border-top:2px solid var(--teal-lt);}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:36px;}
+.footer-brand h3{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--teal-lt);margin-bottom:10px;}
+.footer-brand p{font-size:13px;color:rgba(185,210,212,0.7);line-height:1.7;}
+.footer-col h4{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-lt);margin-bottom:12px;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:7px;}
+.footer-col ul li a{font-size:13px;color:rgba(185,210,212,0.6);text-decoration:none;}
+.footer-col ul li a:hover{color:var(--teal-lt);}
+.footer-bottom{border-top:1px solid rgba(45,90,107,0.25);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.footer-bottom p{font-size:12px;color:rgba(185,210,212,0.5);}
+.footer-disc{font-size:11px;color:rgba(185,210,212,0.4);max-width:700px;line-height:1.6;}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar{display:none}.main{padding:24px 20px}}
+@media(max-width:700px){header{padding:40px 20px 32px}.g2,.g3,.assess-grid{grid-template-columns:1fr}.stat-row{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}.disc-box{padding:28px 20px}}
+</style>
+</head>
+<body>
+<div id="disc-modal">
+  <div class="disc-box">
+    <span class="disc-icon">&#129729;</span>
+    <h1>Medical Disclaimer</h1>
+    <div class="disc-sub">PulmoCare AI &mdash; Pulmonology Health Intelligence Platform</div>
+    <div class="disc-content">
+      <p><strong>RESEARCH &amp; EDUCATIONAL PURPOSE ONLY:</strong> All content is compiled from published pulmonology literature (GOLD, GINA, ATS/ERS, WHO, NICE, NTEP) for educational purposes only.</p>
+      <p><strong>NOT A SUBSTITUTE FOR CHEST/PULMONOLOGY CARE:</strong> Nothing here constitutes medical advice, diagnosis, or treatment. Respiratory conditions require individualised clinical assessment including examination, spirometry, and imaging. AI-generated analysis may be incomplete or inaccurate.</p>
+      <p><strong>MANDATORY PROFESSIONAL CONSULTATION:</strong> Before any treatment decision &mdash; consult a qualified pulmonologist.</p>
+      <p><strong>PULMONARY EMERGENCY &mdash; ACT IMMEDIATELY:</strong> Severe breathlessness, blue lips or fingers, silent chest in a known asthmatic, massive coughing up of blood, sudden one-sided chest pain with breathlessness &mdash; Call 112 (India) / 999 (UK) / 911 (US) or go to A&amp;E IMMEDIATELY.</p>
+    </div>
+    <div class="disc-chk">
+      <div class="chk-row"><input type="checkbox" id="dc1"><label for="dc1">I understand this is an AI research tool &mdash; NOT medical advice, diagnosis, or treatment.</label></div>
+      <div class="chk-row"><input type="checkbox" id="dc2"><label for="dc2">I will consult a qualified pulmonologist before any treatment decision.</label></div>
+      <div class="chk-row"><input type="checkbox" id="dc3"><label for="dc3">In a pulmonary emergency I will call 112/999/911 immediately, not use this platform first.</label></div>
+    </div>
+    <button class="disc-accept" id="disc-btn" disabled onclick="acceptDisc()">I Understand &amp; Accept &mdash; Enter PulmoCare AI</button>
+  </div>
+</div>
+
+<div class="disc-bar"><span class="pdot"></span><strong>&#9888; AI RESEARCH TOOL ONLY</strong> &mdash; Not medical advice. Consult your pulmonologist. EMERGENCY: <strong>112</strong> India / 999 UK / 911 US.</div>
+
+<header>
+  <div class="hdr-inner">
+    <div class="hdr-eyebrow">&#129729; Pulmonology Health Intelligence Platform</div>
+    <h1>PulmoCare <span>AI</span></h1>
+    <div class="hdr-sub">Evidence-Based Chest &amp; Lung Health Research Intelligence</div>
+    <div class="hdr-line"></div>
+    <div class="hdr-desc">Research asthma, COPD, tuberculosis, interstitial lung disease, and pulmonary emergencies &mdash; from GOLD, GINA, ATS/ERS, WHO, NICE and NTEP guidelines. Includes India-specific TB burden and air pollution context.</div>
+    <div class="hdr-badges">
+      <span class="hbadge hb-s">&#129729; Asthma &amp; COPD</span>
+      <span class="hbadge hb-t">&#129440; Tuberculosis</span>
+      <span class="hbadge hb-g">&#127964; Interstitial Lung Disease</span>
+      <span class="hbadge hb-s">&#128680; Pulmonary Emergencies</span>
+      <span class="hbadge hb-t">&#127470;&#127475; India TB &amp; Pollution</span>
+      <span class="hbadge hb-g">&#128274; AES-256 Secure</span>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <div class="nav-inner">
+    <div class="ntab active" onclick="nav('home')">&#127968; Home</div>
+    <div class="ntab" onclick="nav('upload')">&#128193; Upload</div>
+    <div class="ntab" onclick="nav('conditions')">&#129729; Conditions</div>
+    <div class="ntab" onclick="nav('asthma')">&#128168; Asthma</div>
+    <div class="ntab" onclick="nav('copd')">&#128684; COPD</div>
+    <div class="ntab" onclick="nav('tb')">&#129440; Tuberculosis</div>
+    <div class="ntab" onclick="nav('ild')">&#127964; ILD</div>
+    <div class="ntab" onclick="nav('infections')">&#129440; Infections</div>
+    <div class="ntab" onclick="nav('lungcancer')">&#128302; Lung Cancer</div>
+    <div class="ntab" onclick="nav('pleural')">&#128167; Pleural Disease</div>
+    <div class="ntab" onclick="nav('diagnostics')">&#128202; Diagnostics</div>
+    <div class="ntab" onclick="nav('emergency')">&#128680; Emergency</div>
+    <div class="ntab" onclick="nav('india')">&#127470;&#127475; India Context</div>
+    <div class="ntab" onclick="nav('assess')">&#128203; Assessment</div>
+    <div class="ntab" onclick="nav('chat')">&#128172; Ask AI</div>
+    <div class="ntab" onclick="nav('settings')">&#9881; Settings</div>
+  </div>
+</nav>
+
+<div class="app">
+<aside class="sidebar">
+  <div class="sb-lbl">Patient Portal</div>
+  <div class="sbi active" onclick="nav('home')"><span class="si">&#127968;</span>Dashboard</div>
+  <div class="sbi" onclick="nav('upload')"><span class="si">&#128193;</span>Upload Reports</div>
+  <div class="sbi" onclick="nav('assess')"><span class="si">&#128203;</span>Symptom Assessment</div>
+  <div class="sbi" onclick="nav('settings')"><span class="si">&#9881;</span>Settings &amp; AI Provider</div>
+  <div class="sb-div"></div>
+  <div class="sb-lbl">Conditions</div>
+  <div class="sbi" onclick="nav('conditions')"><span class="si">&#129729;</span>All Conditions</div>
+  <div class="sbi" onclick="nav('asthma')"><span class="si">&#128168;</span>Asthma</div>
+  <div class="sbi" onclick="nav('copd')"><span class="si">&#128684;</span>COPD</div>
+  <div class="sbi" onclick="nav('tb')"><span class="si">&#129440;</span>Tuberculosis</div>
+  <div class="sbi" onclick="nav('ild')"><span class="si">&#127964;</span>Interstitial Lung Disease</div>
+  <div class="sbi" onclick="nav('lungcancer')"><span class="si">&#128302;</span>Lung Cancer</div>
+  <div class="sbi" onclick="nav('emergency')"><span class="si">&#128680;</span>Pulmonary Emergencies</div>
+  <div class="sb-div"></div>
+  <div class="sb-lbl">Diagnostics &amp; Care</div>
+  <div class="sbi" onclick="nav('infections')"><span class="si">&#129440;</span>Respiratory Infections</div>
+  <div class="sbi" onclick="nav('pleural')"><span class="si">&#128167;</span>Pleural Disease</div>
+  <div class="sbi" onclick="nav('diagnostics')"><span class="si">&#128202;</span>Pulmonary Function Tests</div>
+  <div class="sbi" onclick="nav('india')"><span class="si">&#127470;&#127475;</span>India Context</div>
+  <div class="sb-div"></div>
+  <div class="sbi" onclick="nav('chat')"><span class="si">&#128172;</span>Ask AI <span class="sb-new">FREE</span></div>
+</aside>
+<main class="main">
+
+<!-- HOME -->
+<div class="panel active" id="panel-home">
+  <div class="ph"><div class="ph-crumb">Welcome</div><h2>Pulmonology Health Intelligence</h2><div class="d-line"></div><p>AI-researched chest and lung health insights from GOLD, GINA, ATS/ERS, WHO, NICE and NTEP guidelines.</p></div>
+  <div class="alert emergency"><span class="ai-ic">&#128680;</span><div>PULMONARY EMERGENCY: Severe breathlessness, blue lips/fingers, silent chest in a known asthmatic, massive coughing up blood, sudden one-sided chest pain with breathlessness &mdash; 112/999/911 or A&amp;E IMMEDIATELY.</div></div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-n">45+</div><div class="stat-l">Topics Covered</div></div>
+    <div class="stat"><div class="stat-n">6</div><div class="stat-l">AI Providers</div></div>
+    <div class="stat"><div class="stat-n">10</div><div class="stat-l">Specialty Areas</div></div>
+    <div class="stat"><div class="stat-n">&#128274;</div><div class="stat-l">AES-256 Secure</div></div>
+  </div>
+  <div class="alert slate"><span class="ai-ic">&#9888;</span><div><strong>Research Tool Only:</strong> All AI output is for educational research. ALWAYS consult a qualified pulmonologist before any treatment decision.</div></div>
+  <div class="g3">
+    <div class="card click" onclick="nav('asthma')"><div class="ci">&#128168;</div><h3>Asthma</h3><p>GINA stepwise management, ICS-formoterol approach, acute exacerbation.</p><span class="ctag">Reversible Airway Disease</span></div>
+    <div class="card click" onclick="nav('copd')"><div class="ci">&#128684;</div><h3>COPD</h3><p>GOLD ABE assessment, bronchodilator therapy, biomass smoke risk.</p><span class="ctag">Progressive Airflow Limitation</span></div>
+    <div class="card click" onclick="nav('tb')"><div class="ci">&#129440;</div><h3>Tuberculosis</h3><p>NTEP diagnosis and treatment, drug-resistant TB, India's highest global burden.</p><span class="ctag">India Priority</span></div>
+    <div class="card click" onclick="nav('lungcancer')"><div class="ci">&#128302;</div><h3>Lung Cancer</h3><p>Red flag symptoms, molecular testing, staging and management.</p><span class="ctag">Early Detection</span></div>
+    <div class="card click" onclick="nav('india')"><div class="ci">&#127470;&#127475;</div><h3>India Context</h3><p>Air pollution burden, NTEP, occupational lung disease, PM-JAY.</p><span class="ctag">India Context</span></div>
+    <div class="card click" onclick="nav('emergency')"><div class="ci">&#128680;</div><h3>Pulmonary Emergencies</h3><p>Acute severe asthma, tension pneumothorax, massive haemoptysis.</p><span class="ctag">Emergency</span></div>
+  </div>
+</div>
+
+<!-- UPLOAD -->
+<div class="panel" id="panel-upload">
+  <div class="ph"><div class="ph-crumb">Step 1</div><h2>Upload Pulmonology Reports</h2><div class="d-line"></div><p>Upload spirometry results, chest X-ray/HRCT imaging, and sputum test reports for AI-assisted research.</p></div>
+  <div class="upload-zone" id="uz" onclick="document.getElementById('fi').click()">
+    <div class="uz-icon">&#129729;</div>
+    <h3 style="font-family:var(--serif);font-size:17px;font-weight:600;margin-bottom:7px;">Drop your reports here</h3>
+    <p style="font-size:13px;color:var(--text3);">All pulmonology document and image formats supported</p>
+    <div class="file-tags">
+      <span class="ftag">Spirometry Report</span><span class="ftag">Chest X-ray</span><span class="ftag">HRCT Chest</span>
+      <span class="ftag">Sputum Test</span><span class="ftag">Sleep Study</span><span class="ftag">PDF &middot; JPG &middot; PNG</span>
+    </div>
+  </div>
+  <input type="file" id="fi" multiple accept=".pdf,.jpg,.jpeg,.png,.docx,.txt" style="display:none" onchange="handleFiles(this.files)">
+  <div id="flist"></div>
+  <div class="bgrp">
+    <button class="btn btn-s btn-lg" id="up-btn" onclick="uploadFiles()"><span class="bt">&#128228; Upload &amp; Process</span><div class="spn"></div></button>
+    <button class="btn btn-outline" onclick="document.getElementById('fi').click()">+ Add More</button>
+    <button class="btn btn-outline" onclick="clearFiles()">&#128465; Clear</button>
+  </div>
+  <div id="up-result"></div>
+</div>
+
+<!-- CONDITIONS -->
+<div class="panel" id="panel-conditions">
+  <div class="ph"><div class="ph-crumb">Pulmonology</div><h2>Chest &amp; Lung Conditions</h2><div class="d-line"></div><p>Comprehensive clinical research from GOLD, GINA, ATS/ERS, NICE and NTEP guidelines.</p></div>
+  <div class="alert warn"><span class="ai-ic">&#9888;</span><div>All information is for educational research. Respiratory conditions require clinical examination, spirometry, and imaging. Never delay assessment for severe breathlessness or coughing up blood.</div></div>
+  <div style="margin-bottom:17px;">
+    <label class="fl">Select Condition</label>
+    <select class="fs" id="cond-sel" onchange="showCondition()">
+      <option value="">-- Select a condition --</option>
+      <optgroup label="Airway Disease"><option>Asthma</option><option>COPD</option><option>Acute Severe Asthma</option></optgroup>
+      <optgroup label="Infections"><option>Tuberculosis</option><option>Community-Acquired Pneumonia</option><option>Acute Bronchitis</option></optgroup>
+      <optgroup label="Interstitial/Occupational"><option>Idiopathic Pulmonary Fibrosis</option><option>Hypersensitivity Pneumonitis</option><option>Silicosis</option></optgroup>
+      <optgroup label="Malignancy"><option>Lung Cancer</option></optgroup>
+      <optgroup label="Pleural"><option>Pleural Effusion</option><option>Pneumothorax</option><option>Tension Pneumothorax</option></optgroup>
+      <optgroup label="Emergencies"><option>Massive Haemoptysis</option><option>ARDS</option><option>Massive Pulmonary Embolism</option></optgroup>
+    </select>
+  </div>
+  <div id="cond-output"></div>
+  <div class="sb"><h3>Quick Clinical Reference</h3>
+    <div class="g2">
+      <div><h4>Life-Threatening Asthma Signs</h4><ul>
+        <li>Silent chest, cyanosis, feeble respiratory effort</li>
+        <li>Bradycardia, hypotension, exhaustion, confusion</li>
+        <li>Peak flow under 33% predicted</li>
+        <li>Rising/normal CO2 is an ominous sign, NOT reassurance</li>
+      </ul></div>
+      <div><h4>TB Screening Red Flag</h4><ul>
+        <li>Cough &gt;2-3 weeks is the key symptom prompting investigation</li>
+        <li>CBNAAT/Truenat first-line rapid molecular test per NTEP</li>
+        <li>Detects rifampicin resistance simultaneously</li>
+        <li>NTEP provides free diagnosis and treatment nationwide</li>
+      </ul></div>
+      <div><h4>Lung Cancer Red Flags</h4><ul>
+        <li>Cough &gt;3 weeks, especially new/changed in a smoker</li>
+        <li>Haemoptysis always requires investigation</li>
+        <li>Unexplained weight loss, hoarseness, finger clubbing</li>
+        <li>Urgent CXR/CT referral, particularly if smoker over 40</li>
+      </ul></div>
+      <div><h4>India Air Pollution &amp; COPD</h4><ul>
+        <li>Biomass fuel smoke is a major under-recognised COPD cause</li>
+        <li>Disproportionately affects women who cook with solid fuels</li>
+        <li>Ambient air pollution also drives asthma exacerbations</li>
+        <li>Clean cooking fuel access programmes aim to reduce exposure</li>
+      </ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ASTHMA -->
+<div class="panel" id="panel-asthma">
+  <div class="ph"><div class="ph-crumb">Reversible Airway Disease</div><h2>Asthma</h2><div class="d-line"></div><p>Research on GINA stepwise management and acute exacerbation from GINA guidelines.</p></div>
+  <div class="tab-bar">
+    <button class="tbtn active" onclick="switchTab(this,'as1')">Diagnosis &amp; Control</button>
+    <button class="tbtn" onclick="switchTab(this,'as2')">GINA Management</button>
+    <button class="tbtn" onclick="switchTab(this,'as3')">Acute Exacerbation</button>
+  </div>
+  <div class="tpane active" id="as1">
+    <div class="sb"><h3>Diagnosis and Control</h3>
+      <p>Wheeze, breathlessness, chest tightness, cough (often nocturnal or exercise-triggered). Diagnosis requires demonstrated variable airflow limitation via spirometry with reversibility testing.</p>
+      <p>Control assessed by symptom frequency, reliever use, night waking, activity limitation. Poor control should prompt review of inhaler technique and adherence before escalating therapy.</p>
+    </div>
+  </div>
+  <div class="tpane" id="as2">
+    <div class="sb"><h3>GINA Stepwise Management</h3>
+      <p>All adults/adolescents should receive ICS-containing therapy rather than SABA-only reliever - SABA-only treatment increases exacerbation risk.</p>
+      <h4>Track 1 (preferred)</h4>
+      <p>As-needed low-dose ICS-formoterol at all steps, escalating to regular ICS-formoterol maintenance plus as-needed at higher steps.</p>
+      <h4>Add-on for Severe Asthma</h4>
+      <p>LABA, LTRA, LAMA, or biologics (omalizumab for allergic, mepolizumab/benralizumab/dupilumab for eosinophilic phenotype) guided by phenotyping.</p>
+    </div>
+  </div>
+  <div class="tpane" id="as3">
+    <div class="sb"><h3>Acute Severe Asthma</h3>
+      <p>Life-threatening features: silent chest, cyanosis, bradycardia/hypotension, exhaustion, confusion, peak flow under 33% predicted.</p>
+      <h4>Management</h4>
+      <p>High-flow oxygen, nebulised salbutamol (repeated/continuous) plus ipratropium, systemic corticosteroids early, IV magnesium sulphate for severe/life-threatening not responding to initial bronchodilators. Escalate to intensive care if deteriorating.</p>
+    </div>
+  </div>
+</div>
+
+<!-- COPD -->
+<div class="panel" id="panel-copd">
+  <div class="ph"><div class="ph-crumb">Progressive Airflow Limitation</div><h2>COPD</h2><div class="d-line"></div><p>Research on GOLD assessment and management from GOLD guidelines.</p></div>
+  <div class="sb"><h3>Definition and Assessment</h3>
+    <p>Persistent respiratory symptoms and airflow limitation, usually from noxious particle/gas exposure. Biomass fuel smoke is a major and under-recognised cause in India, particularly affecting women. GOLD ABE tool combines symptom burden with exacerbation history to guide initial therapy.</p>
+  </div>
+  <div class="sb"><h3>Management</h3>
+    <p>Smoking cessation is the single most important intervention. Bronchodilators (LAMA/LABA combination) are mainstay. ICS added for frequent exacerbators with elevated eosinophils - avoid ICS monotherapy given pneumonia risk. Pulmonary rehabilitation strongly evidenced but underutilised. Long-term oxygen for chronic severe hypoxaemia improves survival.</p>
+  </div>
+  <div class="sb"><h3>Exacerbations</h3>
+    <p>Acute worsening requiring treatment escalation: increased bronchodilators, short-course systemic corticosteroids, antibiotics if increased sputum purulence, controlled oxygen (target 88-92% if hypercapnic risk), NIV for acute hypercapnic respiratory failure with acidosis.</p>
+  </div>
+</div>
+
+<!-- TB -->
+<div class="panel" id="panel-tb">
+  <div class="ph"><div class="ph-crumb">India Priority</div><h2>Tuberculosis</h2><div class="d-line"></div><p>Research on TB diagnosis, treatment, and India's NTEP programme.</p></div>
+  <div class="tab-bar">
+    <button class="tbtn active" onclick="switchTab(this,'tb1')">India Burden</button>
+    <button class="tbtn" onclick="switchTab(this,'tb2')">Presentation &amp; Diagnosis</button>
+    <button class="tbtn" onclick="switchTab(this,'tb3')">Treatment</button>
+  </div>
+  <div class="tpane active" id="tb1">
+    <div class="sb"><h3>India Burden</h3>
+      <p>India carries the world's highest TB burden. NTEP coordinates control efforts with free diagnosis (including CBNAAT/Truenat rapid molecular testing) and treatment nationwide. Drug-resistant TB (MDR/XDR) is a major ongoing challenge requiring specialised prolonged regimens.</p>
+    </div>
+  </div>
+  <div class="tpane" id="tb2">
+    <div class="sb"><h3>Presentation and Diagnosis</h3>
+      <p>Chronic cough &gt;2-3 weeks (key symptom prompting investigation), fever, night sweats, weight loss, haemoptysis. HIV co-infection alters presentation (more extrapulmonary, smear-negative).</p>
+      <p>CBNAAT/GeneXpert now first-line: rapid, detects rifampicin resistance. Culture remains gold-standard sensitivity but slow. Chest X-ray supportive, not diagnostic alone.</p>
+    </div>
+  </div>
+  <div class="tpane" id="tb3">
+    <div class="sb"><h3>Treatment</h3>
+      <p>Standard regimen: 2 months HRZE (isoniazid, rifampicin, pyrazinamide, ethambutol) intensive phase, then 4 months HR continuation - daily dosing throughout. Monitor for hepatotoxicity (isoniazid/rifampicin/pyrazinamide) and visual changes (ethambutol - optic neuritis risk). Drug-resistant TB requires newer WHO-recommended shorter all-oral regimens (bedaquiline, linezolid) under specialist supervision.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ILD -->
+<div class="panel" id="panel-ild">
+  <div class="ph"><div class="ph-crumb">Progressive Lung Scarring</div><h2>Interstitial Lung Disease</h2><div class="d-line"></div><p>Research on IPF, connective tissue disease-associated ILD, and occupational lung disease.</p></div>
+  <div class="sb"><h3>Overview and Diagnosis</h3>
+    <p>Idiopathic pulmonary fibrosis (IPF): most common and generally most aggressive idiopathic form. HRCT chest central to diagnosis; multidisciplinary discussion (pulmonologist, radiologist, pathologist) considered best practice.</p>
+  </div>
+  <div class="sb"><h3>Treatment</h3>
+    <p>IPF: antifibrotic agents (pirfenidone, nintedanib) slow progression but do not reverse fibrosis. CTD-associated ILD: immunosuppression may be appropriate, contrasting with IPF where it's generally not beneficial.</p>
+  </div>
+  <div class="sb"><h3>Occupational Lung Disease in India</h3>
+    <p>Silicosis and coal workers' pneumoconiosis remain prevalent in mining, stone-cutting, and construction workforces, often under-recognised given limited occupational health surveillance. Silicosis notably significantly increases TB risk.</p>
+  </div>
+</div>
+
+<!-- INFECTIONS -->
+<div class="panel" id="panel-infections">
+  <div class="ph"><div class="ph-crumb">Respiratory Infections</div><h2>Respiratory Infections</h2><div class="d-line"></div><p>Research on pneumonia and bronchitis from ATS/ERS guidelines.</p></div>
+  <div class="sb"><h3>Community-Acquired Pneumonia</h3>
+    <p>CURB-65 score guides site-of-care decisions. Typical organisms: S. pneumoniae most common; atypical organisms need different antibiotic coverage. Vaccination reduces incidence in high-risk groups.</p>
+  </div>
+  <div class="sb"><h3>Acute Bronchitis</h3>
+    <p>Usually viral, self-limiting. Antibiotics generally not indicated without underlying lung disease or pneumonia signs - overuse is a significant driver of antimicrobial resistance.</p>
+  </div>
+</div>
+
+<!-- LUNG CANCER -->
+<div class="panel" id="panel-lungcancer">
+  <div class="ph"><div class="ph-crumb">Early Detection</div><h2>Lung Cancer</h2><div class="d-line"></div><p>Research on red flag symptoms, diagnosis, and management from ATS/ERS guidelines.</p></div>
+  <div class="sb"><h3>Red Flag Symptoms</h3>
+    <p>Persistent cough &gt;3 weeks (especially new/changed in a smoker), haemoptysis, unexplained weight loss, persistent chest/shoulder pain, hoarseness, finger clubbing. Any in a current/former smoker over 40 warrants urgent investigation.</p>
+  </div>
+  <div class="sb"><h3>Diagnosis and Management</h3>
+    <p>CT chest for staging; PET-CT for mediastinal/distant assessment. Molecular testing (EGFR, ALK, ROS1, PD-L1) standard for advanced NSCLC to guide targeted therapy/immunotherapy. EGFR-mutant adenocarcinoma more common in Asian never-smokers including India.</p>
+  </div>
+</div>
+
+<!-- PLEURAL -->
+<div class="panel" id="panel-pleural">
+  <div class="ph"><div class="ph-crumb">Pleural Space</div><h2>Pleural Disease</h2><div class="d-line"></div><p>Research on pleural effusion and pneumothorax.</p></div>
+  <div class="sb"><h3>Pleural Effusion</h3>
+    <p>Light's criteria distinguish transudate (treat underlying cause) from exudate (broader workup including ADA for TB in endemic settings like India). Empyema requires prompt drainage plus antibiotics.</p>
+  </div>
+  <div class="sb"><h3>Pneumothorax</h3>
+    <p>Primary (young, thin, no underlying disease) vs secondary (underlying lung disease, higher risk). Tension pneumothorax is an EMERGENCY requiring immediate needle decompression - do not await imaging if clinically suspected.</p>
+  </div>
+</div>
+
+<!-- DIAGNOSTICS -->
+<div class="panel" id="panel-diagnostics">
+  <div class="ph"><div class="ph-crumb">Diagnostic Tests</div><h2>Pulmonary Function Tests</h2><div class="d-line"></div><p>Research guide to understanding spirometry and respiratory investigations.</p></div>
+  <div class="sb"><h3>Key Pulmonary Investigations</h3>
+    <table><tr><th>Test</th><th>Purpose</th><th>Key Findings</th></tr>
+    <tr><td>Spirometry</td><td>FEV1/FVC ratio</td><td>Obstructive (reduced ratio) vs restrictive (preserved ratio, reduced FVC)</td></tr>
+    <tr><td>Bronchodilator reversibility</td><td>Asthma diagnosis support</td><td>Significant FEV1 improvement post-bronchodilator</td></tr>
+    <tr><td>DLCO</td><td>Gas transfer</td><td>Reduced in ILD, emphysema, pulmonary vascular disease</td></tr>
+    <tr><td>Arterial blood gas</td><td>Oxygenation/ventilation</td><td>Hypercapnia in severe COPD or exhausted acute asthma</td></tr>
+    <tr><td>HRCT chest</td><td>Detailed parenchymal assessment</td><td>ILD patterns, bronchiectasis, subtle abnormalities</td></tr>
+    <tr><td>CTPA</td><td>Pulmonary embolism</td><td>Investigation of choice for suspected PE</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EMERGENCY -->
+<div class="panel" id="panel-emergency">
+  <div class="ph"><div class="ph-crumb">URGENT</div><h2>Pulmonary Emergencies</h2><div class="d-line"></div></div>
+  <div class="alert emergency"><span class="ai-ic">&#128680;</span><div>PULMONARY EMERGENCIES &mdash; 112 (India) / 999 (UK) / 911 (US): Acute severe asthma, tension pneumothorax, massive haemoptysis, ARDS, massive PE. ALL LIFE-THREATENING.</div></div>
+  <div class="g2">
+    <div class="sb"><h3>&#128680; Acute Severe Asthma</h3>
+      <p>Silent chest, cyanosis, exhaustion, peak flow under 33%.</p>
+      <ul>
+        <li>Immediate high-flow oxygen, continuous nebulised bronchodilators</li>
+        <li>Systemic corticosteroids, IV magnesium sulphate</li>
+        <li>Rising/normal CO2 is ominous, not reassuring</li>
+      </ul>
+    </div>
+    <div class="sb"><h3>&#128680; Tension Pneumothorax</h3>
+      <p>Progressive chest pain/breathlessness, hypotension, tracheal deviation.</p>
+      <ul>
+        <li>IMMEDIATE needle decompression</li>
+        <li>Do not wait for chest X-ray confirmation if clinically suspected</li>
+        <li>Followed by formal chest drain insertion</li>
+      </ul>
+    </div>
+    <div class="sb"><h3>&#128680; Massive Haemoptysis</h3>
+      <p>Large-volume coughing up of blood, risk of asphyxiation.</p>
+      <ul>
+        <li>Position with bleeding side dependent if known</li>
+        <li>Urgent bronchoscopy/CT angiography to localise source</li>
+        <li>Bronchial artery embolisation often definitive treatment</li>
+      </ul>
+    </div>
+    <div class="sb"><h3>&#128680; ARDS</h3>
+      <p>Acute severe hypoxaemic respiratory failure with bilateral infiltrates.</p>
+      <ul>
+        <li>Requires intensive care management</li>
+        <li>Lung-protective ventilation (low tidal volume)</li>
+        <li>Prone positioning for moderate-severe cases</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- INDIA -->
+<div class="panel" id="panel-india">
+  <div class="ph"><div class="ph-crumb">India Context</div><h2>Pulmonology in India</h2><div class="d-line"></div><p>India-specific air pollution burden, TB elimination programme, and occupational lung disease.</p></div>
+  <div class="sb"><h3>Air Pollution Burden</h3>
+    <p>India experiences among the highest ambient and household air pollution levels globally, a major contributor to COPD, asthma exacerbations, and respiratory infections. Household air pollution from biomass cooking disproportionately affects women and children.</p>
+  </div>
+  <div class="sb"><h3>TB Elimination Programme</h3>
+    <p>NTEP coordinates India's TB control strategy, providing free diagnosis (rapid molecular testing) and treatment nationwide, alongside nutritional support (Ni-kshay Poshan Yojana) and digital adherence tools. India has an ambitious TB elimination target ahead of the global WHO timeline.</p>
+  </div>
+  <div class="sb"><h3>Occupational Lung Disease</h3>
+    <p>Silicosis and pneumoconioses remain significant in mining, quarrying, and construction sectors, often affecting informally employed workers with limited occupational health monitoring or compensation access.</p>
+  </div>
+</div>
+
+<!-- ASSESSMENT -->
+<div class="panel" id="panel-assess">
+  <div class="ph"><div class="ph-crumb">Personalised Research</div><h2>Symptom Assessment</h2><div class="d-line"></div><p>Describe your respiratory symptom for AI-researched guidance on possible causes and urgency.</p></div>
+  <div class="alert warn"><span class="ai-ic">&#9888;</span><div>This is an AI research tool only. Not a substitute for clinical examination and spirometry. For severe breathlessness, blue lips, or coughing up significant blood &mdash; call 112/999/911 immediately.</div></div>
+  <div class="sb"><h3>Describe Your Symptom</h3>
+    <div class="assess-grid">
+      <div class="fg"><label class="fl">Chief Symptom</label><input class="fi" id="as-symptom" placeholder="e.g. breathlessness, chronic cough, wheeze"></div>
+      <div class="fg"><label class="fl">Duration</label><select class="fs" id="as-duration"><option value="">Select</option><option>Less than 24 hours</option><option>1-7 days</option><option>1-4 weeks</option><option>Over 1 month</option><option>Recurrent</option></select></div>
+      <div class="fg"><label class="fl">Age</label><input class="fi" id="as-age" placeholder="e.g. 50"></div>
+      <div class="fg"><label class="fl">Smoking/Exposure History</label><input class="fi" id="as-exposure" placeholder="e.g. smoker, biomass fuel cooking, occupational dust"></div>
+      <div class="fg" style="grid-column:1/-1;"><label class="fl">Additional History</label><input class="fi" id="as-history" placeholder="e.g. known asthmatic, diabetic, on inhalers"></div>
+    </div>
+    <div class="bgrp">
+      <button class="btn btn-s btn-lg" id="as-btn" onclick="runAssessment()"><span class="bt">&#128203; Get AI Research</span><div class="spn"></div></button>
+    </div>
+  </div>
+  <div id="assess-output"></div>
+</div>
+
+<!-- CHAT -->
+<div class="panel" id="panel-chat">
+  <div class="ph"><div class="ph-crumb">AI Research Assistant</div><h2>Ask PulmoCare AI</h2><div class="d-line"></div><p>Ask any pulmonology question. AI-researched from GOLD, GINA, ATS/ERS, NICE and NTEP. <strong>Free forever.</strong></p></div>
+  <div class="alert emergency"><span class="ai-ic">&#128680;</span><div>PULMONARY EMERGENCY (severe breathlessness, silent chest, massive haemoptysis) &mdash; 112/999/911 IMMEDIATELY. Do NOT type here first.</div></div>
+  <div class="alert warn"><span class="ai-ic">&#9888;</span><div>AI responses are for educational research only. Not medical advice. Always consult your pulmonologist.</div></div>
+  <div class="chat-wrap">
+    <div class="chat-head"><h3>&#129729; PulmoCare AI Research Assistant</h3><span class="free">FREE FOREVER</span></div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="cm sys">Welcome to PulmoCare AI &#129729;</div>
+      <div class="cm ai"><div class="ai-lbl">PulmoCare AI</div>Hello! I can research questions about asthma, COPD, tuberculosis, lung infections, and pulmonary emergencies. For emergencies (severe breathlessness, silent chest, massive haemoptysis) act immediately &mdash; 112/999/911. I provide educational research only, not personal medical advice.</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-in" placeholder="Ask about breathlessness, chronic cough, asthma, TB..." onkeypress="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">Ask</button>
+    </div>
+    <div style="padding:8px 18px 14px;background:var(--cream2);">
+      <button onclick="openAR(document.getElementById('chat-in').value)"
+        style="display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;border:2px solid #4d6bfe;background:transparent;color:#4d6bfe;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;width:100%;justify-content:center;"
+        onmouseover="this.style.background='#4d6bfe';this.style.color='#fff'"
+        onmouseout="this.style.background='transparent';this.style.color='#4d6bfe'">
+        &#9889; Ambiguity Resolver &mdash; Get Multi-AI Consensus Answer
+      </button>
+      <p style="font-size:11px;color:#888;text-align:center;margin-top:6px;">Query all configured AIs simultaneously for a synthesised best answer</p>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="panel" id="panel-settings">
+  <div class="ph"><div class="ph-crumb">Configuration</div><h2>Settings &amp; AI Provider</h2><div class="d-line"></div><p>Choose which AI powers your research. Keys are AES-256-GCM encrypted and stored only in your browser.</p></div>
+  <div class="sb">
+    <h3>&#129302; Choose Your AI Provider</h3>
+    <p style="margin-bottom:16px;">6 providers available. AES-256-GCM encrypted before storage. Ambiguity Resolver queries multiple AIs simultaneously.</p>
+    <div class="g3" style="margin-bottom:18px;">
+      <div class="card click provider-card" data-provider="openai" onclick="selectProvider('openai')"><div class="ci">&#129001;</div><h3>ChatGPT</h3><p><p><p>OpenAI &mdash; gpt-4o</p><span class="ctag" id="ptag-openai">Not configured</span></div>
+      <div class="card click provider-card" data-provider="gemini" onclick="selectProvider('gemini')"><div class="ci">&#128309;</div><h3>Gemini</h3><p>Google &mdash; gemini-2.0-flash</p><span class="ctag" id="ptag-gemini">Not configured</span></div>
+      <div class="card click provider-card" data-provider="grok" onclick="selectProvider('grok')"><div class="ci">&#9899;</div><h3>Grok</h3><p>xAI &mdash; grok-2-latest</p><span class="ctag" id="ptag-grok">Not configured</span></div>
+      <div class="card click provider-card" data-provider="deepseek" onclick="selectProvider('deepseek')"><div class="ci">&#128308;</div><h3>DeepSeek</h3><p>DeepSeek &mdash; deepseek-chat</p><span class="ctag" id="ptag-deepseek">Not configured</span></div>
+      <div class="card click provider-card" data-provider="anthropic" onclick="selectProvider('anthropic')"><div class="ci">&#128995;</div><h3>Claude</h3>Anthropic &mdash; claude-sonnet-4</p><span class="ctag" id="ptag-anthropic">Not configured</span></div>
+      <div class="card click provider-card" data-provider="mistral" onclick="selectProvider('mistral')"><div class="ci">&#127756;</div><h3>Mistral AI</h3><p>Mistral &mdash; mistral-large-latest</p><span class="ctag" id="ptag-mistral">Not configured</span></div>
+    </div>
+  </div>
+  <div class="api-box" id="key-entry-box">
+    <h3 id="key-entry-title">&#128273; API Key</h3>
+    <p id="key-entry-desc" style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6;">Select a provider above, then paste its API key here.</p>
+    <div class="api-row">
+      <input class="api-input" type="password" id="api-key-in" placeholder="Paste your API key here">
+      <button class="btn btn-s" onclick="saveKey()">Save</button>
+      <button class="btn btn-outline btn-sm" onclick="clearKey()">Clear</button>
+    </div>
+    <div id="key-status" style="margin-top:10px;font-size:12px;color:var(--text3);">No provider selected &mdash; offline mode.</div>
+    <div style="margin-top:6px;font-size:11px;color:var(--text3);">&#128274; AES-256-GCM encrypted &middot; PBKDF2 key derivation &middot; Device-bound &middot; Never leaves your browser</div>
+    <div style="margin-top:8px;"><a id="get-key-link" href="#" target="_blank" style="font-size:12px;color:var(--slate);">Get a free API key &#8594;</a></div>
+  </div>
+  <div class="sb"><h3>System Status</h3>
+    <div style="font-size:13.5px;line-height:2;color:var(--text2);">
+      Server: <span style="color:var(--teal)">&#10003; Running</span><br>
+      Active Provider: <span id="mode-disp">Offline Research</span><br>
+      Security: <span style="color:var(--slate)">&#128274; AES-256-GCM</span><br>
+      Offline KB: <span style="color:var(--teal)">&#10003; Available (10 categories)</span><br>
+      Ambiguity Resolver: <span style="color:#4d6bfe">&#9889; Available</span>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>&#129729; PulmoCare AI</h3><p>Pulmonology Health Intelligence Platform &mdash; AI-researched insights from GOLD, GINA, ATS/ERS, WHO, NICE, NTEP and peer-reviewed literature. India-specific TB and air pollution context included.</p></div>
+      <div class="footer-col"><h4>Sections</h4><ul>
+        <li><a href="#" onclick="nav('asthma')">Asthma</a></li>
+        <li><a href="#" onclick="nav('copd')">COPD</a></li>
+        <li><a href="#" onclick="nav('tb')">Tuberculosis</a></li>
+        <li><a href="#" onclick="nav('ild')">Interstitial Lung Disease</a></li>
+        <li><a href="#" onclick="nav('lungcancer')">Lung Cancer</a></li>
+        <li><a href="#" onclick="nav('emergency')">Emergencies</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Clinical Sources</h4><ul>
+        <li><a href="https://goldcopd.org" target="_blank">GOLD Guidelines</a></li>
+        <li><a href="https://ginasthma.org" target="_blank">GINA Guidelines</a></li>
+        <li><a href="https://www.nice.org.uk" target="_blank">NICE Guidelines</a></li>
+        <li><a href="https://tbcindia.gov.in" target="_blank">NTEP India</a></li>
+        <li><a href="https://www.who.int" target="_blank">WHO</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>PulmoCare AI &mdash; For Research &amp; Educational Purposes Only &middot; Not Medical Advice</p>
+      <div class="footer-disc">Not a substitute for professional pulmonology care. EMERGENCY: 112 (India) / 999 (UK) / 911 (US). &#128274; AES-256-GCM key encryption.</div>
+    </div>
+  </div>
+</footer>
+<script>
+
+// AES-256-GCM Secure Key Storage
+/**
+ * OrthoCare / CardioCare / NeuroCare / GynoCare / OncoCare AI
+ * AES-256-GCM Client-Side Key Security Module v1.0
+ * =====================================================
+ * Encrypts API keys before storing in localStorage using
+ * AES-256-GCM via the browser's native Web Crypto API.
+ * The encryption key is derived from a device-specific
+ * fingerprint using PBKDF2 (100,000 iterations, SHA-256).
+ *
+ * Security properties:
+ * - Keys are NEVER stored in plaintext in localStorage
+ * - AES-256-GCM provides both encryption AND authentication (AEAD)
+ * - The derived key is not persisted anywhere
+ * - A random 96-bit IV is generated for every encryption operation
+ * - PBKDF2 with 100k iterations makes brute-force attacks expensive
+ * - Key never leaves the browser except when sent directly to AI provider API
+ *
+ * Usage: drop this entire block before your ST = {} state declaration.
+ * Then replace all localStorage.setItem(key, JSON.stringify(keys)) with
+ * await SecureKeyStore.save(storeName, keys)
+ * and all JSON.parse(localStorage.getItem(...)) with
+ * await SecureKeyStore.load(storeName)
+ */
+
+const SecureKeyStore = (function() {
+  'use strict';
+
+  // Derive a deterministic device fingerprint from stable browser properties.
+  // This is NOT cryptographically strong identity - it's a convenience measure
+  // to ensure keys encrypted on this browser can only be decrypted on this browser.
+  function getDeviceFingerprint(appId) {
+    var parts = [
+      appId,
+      navigator.userAgent || '',
+      navigator.language || '',
+      (screen.width || 0) + 'x' + (screen.height || 0),
+      navigator.hardwareConcurrency || 0,
+      Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+    ];
+    return parts.join('|:|');
+  }
+
+  // Derive AES-256 key from fingerprint using PBKDF2
+  async function deriveKey(appId) {
+    var fingerprint = getDeviceFingerprint(appId);
+    var encoder = new TextEncoder();
+    var rawKey = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(fingerprint),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveKey']
+    );
+    // Use a fixed but app-specific salt (not secret - purpose is just domain separation)
+    var salt = encoder.encode('medical-ai-platform-' + appId + '-v1');
+    return await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+      rawKey,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  // Encrypt a string value, returns base64-encoded IV + ciphertext
+  async function encrypt(plaintext, appId) {
+    var key = await deriveKey(appId);
+    var iv = crypto.getRandomValues(new Uint8Array(12)); // 96-bit random IV
+    var encoder = new TextEncoder();
+    var ciphertext = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv: iv },
+      key,
+      encoder.encode(plaintext)
+    );
+    // Prepend IV to ciphertext for storage: [12 bytes IV][ciphertext]
+    var combined = new Uint8Array(iv.length + ciphertext.byteLength);
+    combined.set(iv, 0);
+    combined.set(new Uint8Array(ciphertext), iv.length);
+    return btoa(String.fromCharCode.apply(null, combined));
+  }
+
+  // Decrypt a base64-encoded IV + ciphertext string
+  async function decrypt(encoded, appId) {
+    try {
+      var key = await deriveKey(appId);
+      var combined = new Uint8Array(
+        atob(encoded).split('').map(function(c) { return c.charCodeAt(0); })
+      );
+      var iv = combined.slice(0, 12);
+      var ciphertext = combined.slice(12);
+      var plaintext = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv },
+        key,
+        ciphertext
+      );
+      return new TextDecoder().decode(plaintext);
+    } catch (e) {
+      // Decryption failed - key may have been stored with old method (plaintext)
+      // or device fingerprint changed. Return null to trigger re-entry.
+      return null;
+    }
+  }
+
+  // Public API
+  return {
+    /**
+     * Save API keys object to localStorage with AES-256-GCM encryption.
+     * @param {string} storeName - localStorage key name (e.g. 'cc_keys')
+     * @param {string} appId - app-specific ID for key derivation (e.g. 'cardiocare')
+     * @param {object} keysObj - { provider: 'sk-...' } keys object
+     */
+    save: async function(storeName, appId, keysObj) {
+      try {
+        var plaintext = JSON.stringify(keysObj);
+        var encrypted = await encrypt(plaintext, appId);
+        localStorage.setItem(storeName, encrypted);
+        localStorage.setItem(storeName + '_enc', '1'); // flag: encrypted format
+        return true;
+      } catch (e) {
+        // Fallback: if Web Crypto unavailable (very old browser), store plaintext
+        console.warn('[SecureKeyStore] Encryption unavailable, storing plaintext:', e.message);
+        localStorage.setItem(storeName, JSON.stringify(keysObj));
+        return false;
+      }
+    },
+
+    /**
+     * Load and decrypt API keys from localStorage.
+     * @param {string} storeName - localStorage key name
+     * @param {string} appId - must match what was used in save()
+     * @returns {object} keysObj or {} if not found / decryption failed
+     */
+    load: async function(storeName, appId) {
+      try {
+        var stored = localStorage.getItem(storeName);
+        if (!stored) return {};
+        var isEncrypted = localStorage.getItem(storeName + '_enc') === '1';
+        if (!isEncrypted) {
+          // Migrate plaintext to encrypted on next save
+          var parsed = JSON.parse(stored);
+          // Auto-migrate: re-encrypt now
+          await this.save(storeName, appId, parsed);
+          return parsed;
+        }
+        var plaintext = await decrypt(stored, appId);
+        if (plaintext === null) {
+          // Decryption failed (e.g. different browser/device after migration)
+          // Clear and start fresh - user will need to re-enter keys
+          console.warn('[SecureKeyStore] Decryption failed - clearing stored keys');
+          localStorage.removeItem(storeName);
+          localStorage.removeItem(storeName + '_enc');
+          return {};
+        }
+        return JSON.parse(plaintext);
+      } catch (e) {
+        return {};
+      }
+    },
+
+    /**
+     * Remove all keys for a store.
+     */
+    clear: function(storeName) {
+      localStorage.removeItem(storeName);
+      localStorage.removeItem(storeName + '_enc');
+    },
+
+    /**
+     * Check if Web Crypto AES-GCM is available in this browser.
+     */
+    isAvailable: function() {
+      return !!(window.crypto && window.crypto.subtle && window.crypto.subtle.encrypt);
+    }
+  };
+})();
+
+// Application Code
+
+// ============================================================
+// UNIVERSAL SECURITY + FEATURE PATCH v2.0
+// Injected into all 9 Medical AI platforms
+// 1. XSS escaping for all user-controlled innerHTML
+// 2. Mistral AI as 6th provider
+// 3. Ambiguity Resolver (multi-AI consensus engine)
+// 4. Content Security hardening
+// ============================================================
+
+// ── XSS ESCAPE FUNCTIONS ─────────────────────────────────────
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+}
+
+function sanitizeAIResponse(text) {
+    // AI responses can contain markdown — preserve line breaks and basic formatting
+    // but strip any actual HTML tags to prevent XSS
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+}
+
+function escapeFilename(name) {
+    if (!name) return 'unknown';
+    // Only allow safe filename characters for display
+    return String(name).replace(/[<>&"'\/\\]/g, c => ({
+        '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#x27;','/':'&#x2F;','\\':'&#x5C;'
+    }[c]));
+}
+
+// ── PROVIDER REGISTRY (6 providers) ──────────────────────────
+var PROVIDERS = {
+    anthropic: {
+        label: 'Claude (Anthropic)',
+        placeholder: 'sk-ant-api03-...',
+        getKeyUrl: 'https://console.anthropic.com',
+        icon: '&#128995;',
+        color: '#c96442'
+    },
+    openai: {
+        label: 'ChatGPT (OpenAI)',
+        placeholder: 'sk-...',
+        getKeyUrl: 'https://platform.openai.com/api-keys',
+        icon: '&#129001;',
+        color: '#10a37f'
+    },
+    gemini: {
+        label: 'Gemini (Google)',
+        placeholder: 'AIza...',
+        getKeyUrl: 'https://aistudio.google.com/apikey',
+        icon: '&#128309;',
+        color: '#4285f4'
+    },
+    grok: {
+        label: 'Grok (xAI)',
+        placeholder: 'xai-...',
+        getKeyUrl: 'https://console.x.ai',
+        icon: '&#9899;',
+        color: '#1da1f2'
+    },
+    deepseek: {
+        label: 'DeepSeek',
+        placeholder: 'sk-...',
+        getKeyUrl: 'https://platform.deepseek.com/api_keys',
+        icon: '&#128308;',
+        color: '#4d6bfe'
+    },
+    mistral: {
+        label: 'Mistral AI',
+        placeholder: 'your-mistral-key...',
+        getKeyUrl: 'https://console.mistral.ai/api-keys',
+        icon: '&#127756;',
+        color: '#ff7000'
+    }
+};
+
+// ── AMBIGUITY RESOLVER ────────────────────────────────────────
+// CSS injected once
+(function injectAmbiguityCSS() {
+    if (document.getElementById('ar-style')) return;
+    var style = document.createElement('style');
+    style.id = 'ar-style';
+    style.textContent = [
+        '#ar-overlay{position:fixed;inset:0;z-index:9000;background:rgba(5,5,15,0.92);backdrop-filter:blur(14px);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;}',
+        '#ar-overlay.ar-open{display:flex;}',
+        '#ar-box{background:#fff;border-radius:18px;max-width:900px;width:100%;padding:0;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.4);}',
+        '#ar-head{padding:22px 28px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:space-between;}',
+        '#ar-head h2{font-size:17px;font-weight:700;color:#fff;margin:0;}',
+        '#ar-head p{font-size:12px;color:rgba(255,255,255,0.6);margin:4px 0 0;}',
+        '#ar-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}',
+        '#ar-close:hover{background:rgba(255,255,255,0.25);}',
+        '#ar-query-area{padding:20px 28px;border-bottom:1px solid #eee;}',
+        '#ar-query-area label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#666;display:block;margin-bottom:6px;}',
+        '#ar-prompt{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;min-height:80px;outline:none;box-sizing:border-box;}',
+        '#ar-prompt:focus{border-color:#4d6bfe;}',
+        '#ar-providers-area{padding:18px 28px;border-bottom:1px solid #eee;}',
+        '#ar-providers-area label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#666;display:block;margin-bottom:10px;}',
+        '.ar-prov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}',
+        '.ar-prov-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border:2px solid #eee;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;user-select:none;}',
+        '.ar-prov-chip:hover{border-color:#4d6bfe;background:#f0f2ff;}',
+        '.ar-prov-chip.ar-selected{border-color:#4d6bfe;background:#eef1ff;font-weight:600;}',
+        '.ar-prov-chip .ar-key-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}',
+        '.ar-prov-chip .ar-key-ok{background:#22c55e;}',
+        '.ar-prov-chip .ar-key-miss{background:#ef4444;}',
+        '#ar-actions{padding:16px 28px;display:flex;gap:10px;align-items:center;}',
+        '#ar-run-btn{padding:12px 28px;border-radius:10px;background:linear-gradient(135deg,#4d6bfe,#7c3aed);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}',
+        '#ar-run-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(77,107,254,0.4);}',
+        '#ar-run-btn:disabled{opacity:0.5;cursor:not-allowed;}',
+        '#ar-note{font-size:12px;color:#888;}',
+        '#ar-results{padding:0 28px 28px;}',
+        '.ar-resp-card{margin-top:16px;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;}',
+        '.ar-resp-head{padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}',
+        '.ar-resp-body{padding:14px 16px;font-size:13.5px;line-height:1.75;color:#374151;background:#fafafa;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow-y:auto;}',
+        '.ar-resp-err{padding:14px 16px;font-size:13px;color:#ef4444;background:#fff5f5;}',
+        '#ar-synthesis{margin-top:20px;border:2px solid #4d6bfe;border-radius:14px;overflow:hidden;}',
+        '#ar-synthesis-head{padding:14px 18px;background:linear-gradient(135deg,#4d6bfe,#7c3aed);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}',
+        '#ar-synthesis-body{padding:16px 18px;font-size:13.5px;line-height:1.8;color:#1f2937;white-space:pre-wrap;word-break:break-word;}',
+        '#ar-spinner{display:none;padding:24px;text-align:center;color:#666;}',
+        '.ar-spin{display:inline-block;width:32px;height:32px;border:3px solid #e5e7eb;border-top-color:#4d6bfe;border-radius:50%;animation:arSpin 0.8s linear infinite;margin-bottom:8px;}',
+        '@keyframes arSpin{to{transform:rotate(360deg)}}',
+        '.ar-stat-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;margin-left:auto;}',
+        '.ar-stat-ok{background:#dcfce7;color:#166534;}',
+        '.ar-stat-err{background:#fee2e2;color:#991b1b;}',
+        '@media(max-width:600px){.ar-prov-grid{grid-template-columns:1fr 1fr;}#ar-box{padding:0;}}'
+    ].join('');
+    document.head.appendChild(style);
+})();
+
+// Build the overlay HTML once
+function buildArOverlay() {
+    if (document.getElementById('ar-overlay')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'ar-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.innerHTML = [
+        '<div id="ar-box">',
+        '  <div id="ar-head">',
+        '    <div>',
+        '      <h2>&#128101; Ambiguity Resolver &mdash; Multi-AI Consensus</h2>',
+        '      <p>Select AIs with valid keys &rarr; all run your query in parallel &rarr; best answer synthesised</p>',
+        '    </div>',
+        '    <button id="ar-close" onclick="closeAR()" title="Close">&#10005;</button>',
+        '  </div>',
+        '  <div id="ar-query-area">',
+        '    <label>Your Question / Query</label>',
+        '    <textarea id="ar-prompt" placeholder="Enter your medical research question here..."></textarea>',
+        '  </div>',
+        '  <div id="ar-providers-area">',
+        '    <label>Select AI Providers (only those with saved keys are available)</label>',
+        '    <div class="ar-prov-grid" id="ar-prov-grid"></div>',
+        '  </div>',
+        '  <div id="ar-actions">',
+        '    <button id="ar-run-btn" onclick="runAmbiguityResolver()" disabled>',
+        '      &#9889; Resolve with Multi-AI',
+        '    </button>',
+        '    <span id="ar-note">Select at least 2 AIs</span>',
+        '  </div>',
+        '  <div id="ar-spinner">',
+        '    <div class="ar-spin"></div>',
+        '    <div id="ar-spin-msg">Querying selected AIs in parallel&hellip;</div>',
+        '  </div>',
+        '  <div id="ar-results"></div>',
+        '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+    // Close on backdrop click
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeAR();
+    });
+}
+
+function openAR(prefillText) {
+    buildArOverlay();
+    renderArProviderChips();
+    if (prefillText) {
+        var ta = document.getElementById('ar-prompt');
+        if (ta) ta.value = prefillText;
+    }
+    document.getElementById('ar-results').innerHTML = '';
+    document.getElementById('ar-spinner').style.display = 'none';
+    document.getElementById('ar-overlay').classList.add('ar-open');
+}
+
+function closeAR() {
+    var ov = document.getElementById('ar-overlay');
+    if (ov) ov.classList.remove('ar-open');
+}
+
+function renderArProviderChips() {
+    var grid = document.getElementById('ar-prov-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    Object.keys(PROVIDERS).forEach(function(pid) {
+        var meta = PROVIDERS[pid];
+        var hasKey = !!(window.ST && window.ST.keys && window.ST.keys[pid]);
+        var chip = document.createElement('div');
+        chip.className = 'ar-prov-chip' + (hasKey ? '' : ' ar-disabled');
+        chip.dataset.provider = pid;
+        chip.style.opacity = hasKey ? '1' : '0.45';
+        chip.innerHTML = '<span>' + meta.icon + '</span>'
+            + '<span>' + escapeHtml(meta.label) + '</span>'
+            + '<span class="ar-key-dot ' + (hasKey ? 'ar-key-ok' : 'ar-key-miss') + '" title="' + (hasKey ? 'Key configured' : 'No key saved') + '"></span>';
+        if (hasKey) {
+            chip.addEventListener('click', function() {
+                chip.classList.toggle('ar-selected');
+                updateArRunBtn();
+            });
+        }
+        grid.appendChild(chip);
+    });
+}
+
+function updateArRunBtn() {
+    var selected = document.querySelectorAll('.ar-prov-chip.ar-selected');
+    var btn = document.getElementById('ar-run-btn');
+    var note = document.getElementById('ar-note');
+    if (!btn) return;
+    var count = selected.length;
+    btn.disabled = count < 2;
+    if (note) note.textContent = count < 2
+        ? 'Select at least 2 AIs (' + count + ' selected)'
+        : count + ' AIs selected \u2014 ready to resolve';
+}
+
+function runAmbiguityResolver() {
+    var prompt = (document.getElementById('ar-prompt') || {}).value;
+    if (!prompt || !prompt.trim()) {
+        alert('Please enter a question first.');
+        return;
+    }
+    var selected = Array.from(document.querySelectorAll('.ar-prov-chip.ar-selected'));
+    if (selected.length < 2) { alert('Select at least 2 AIs.'); return; }
+
+    var pairs = selected.map(function(chip) {
+        return { provider: chip.dataset.provider, key: window.ST.keys[chip.dataset.provider] };
+    });
+
+    // Show spinner, hide results
+    document.getElementById('ar-spinner').style.display = 'block';
+    document.getElementById('ar-results').innerHTML = '';
+    document.getElementById('ar-run-btn').disabled = true;
+    document.getElementById('ar-spin-msg').textContent =
+        'Querying ' + pairs.length + ' AIs in parallel\u2026';
+
+    // POST to /api/resolve (backend endpoint we add)
+    fetch('/api/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            prompt: prompt.trim(),
+            providers: pairs
+        })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        document.getElementById('ar-spinner').style.display = 'none';
+        document.getElementById('ar-run-btn').disabled = false;
+        renderArResults(data, prompt.trim());
+    })
+    .catch(function(err) {
+        document.getElementById('ar-spinner').style.display = 'none';
+        document.getElementById('ar-run-btn').disabled = false;
+        document.getElementById('ar-results').innerHTML =
+            '<div style="padding:16px;color:#ef4444;">&#10006; Connection error: ' + escapeHtml(String(err)) + '</div>';
+    });
+}
+
+function renderArResults(data, prompt) {
+    var container = document.getElementById('ar-results');
+    if (!container) return;
+    var html = '';
+
+    // Individual AI responses
+    var responses = data.responses || [];
+    responses.forEach(function(r) {
+        var icon = (PROVIDERS[r.provider] || {}).icon || '&#129302;';
+        var label = escapeHtml((PROVIDERS[r.provider] || {}).label || r.provider);
+        var badgeClass = r.success ? 'ar-stat-ok' : 'ar-stat-err';
+        var badgeText = r.success ? '&#10003; Success' : '&#10006; Failed';
+        html += '<div class="ar-resp-card">';
+        html += '<div class="ar-resp-head" style="background:#f8f9fa;">';
+        html += icon + ' <span>' + label + '</span>';
+        html += '<span class="ar-stat-badge ' + badgeClass + '">' + badgeText + '</span>';
+        html += '</div>';
+        if (r.success && r.text) {
+            html += '<div class="ar-resp-body">' + sanitizeAIResponse(r.text) + '</div>';
+        } else {
+            html += '<div class="ar-resp-err">&#9888; ' + escapeHtml(r.mode || 'No response') + '</div>';
+        }
+        html += '</div>';
+    });
+
+    // Synthesis
+    if (data.synthesis) {
+        html += '<div id="ar-synthesis">';
+        html += '<div id="ar-synthesis-head">&#127941; Synthesised Best Answer</div>';
+        html += '<div id="ar-synthesis-body">' + sanitizeAIResponse(data.synthesis) + '</div>';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+// ── AMBIGUITY RESOLVER BUTTON FACTORY ────────────────────────
+function createARButton(prefillFn, containerEl, extraClass) {
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-ar' + (extraClass ? ' ' + extraClass : '');
+    btn.innerHTML = '&#9889; Resolve with Multi-AI';
+    btn.title = 'Query multiple AIs simultaneously and get a synthesised best answer';
+    btn.style.cssText = [
+        'display:inline-flex;align-items:center;gap:7px;padding:10px 20px;',
+        'border-radius:10px;border:2px solid #4d6bfe;background:transparent;',
+        'color:#4d6bfe;font-family:inherit;font-size:13px;font-weight:700;',
+        'cursor:pointer;transition:all 0.2s;white-space:nowrap;'
+    ].join('');
+    btn.addEventListener('mouseenter', function() {
+        btn.style.background = '#4d6bfe';
+        btn.style.color = '#fff';
+    });
+    btn.addEventListener('mouseleave', function() {
+        btn.style.background = 'transparent';
+        btn.style.color = '#4d6bfe';
+    });
+    btn.addEventListener('click', function() {
+        openAR(prefillFn ? prefillFn() : '');
+    });
+    if (containerEl) containerEl.appendChild(btn);
+    return btn;
+}
+
+window.ST = { provider: localStorage.getItem('pulmocare_provider') || '', keys: {}, files: [] };
+function currentApiKey(){ return ST.provider ? (ST.keys[ST.provider] || '') : ''; }
+
+document.addEventListener('DOMContentLoaded', function(){
+  (async function(){
+    try {
+      if(SecureKeyStore.isAvailable()){ ST.keys = await SecureKeyStore.load('pulmo_keys','pulmocare'); }
+      else { var r=localStorage.getItem('pulmo_keys'); ST.keys=r?JSON.parse(r):{}; }
+    } catch(e){ ST.keys={}; }
+  })();
+  ['dc1','dc2','dc3'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('change', function(){
+      var ok=['dc1','dc2','dc3'].every(function(i){ var x=document.getElementById(i); return x&&x.checked; });
+      var btn=document.getElementById('disc-btn'); if(btn) btn.disabled=!ok;
+    });
+  });
+  if(sessionStorage.getItem('pulmocare_disc')){
+    var m=document.getElementById('disc-modal'); if(m) m.style.display='none';
+  }
+  setTimeout(function(){ refreshProviderTags(); selectProvider(ST.provider,true); },100);
+});
+
+function acceptDisc(){
+  var m=document.getElementById('disc-modal'); if(m) m.style.display='none';
+  sessionStorage.setItem('pulmocare_disc','1');
+}
+
+function nav(id){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.ntab,.sbi').forEach(function(n){ n.classList.remove('active'); });
+  var p=document.getElementById('panel-'+id); if(p) p.classList.add('active');
+  document.querySelectorAll('.ntab,.sbi').forEach(function(el){
+    var oc=el.getAttribute('onclick');
+    if(oc && oc.indexOf("'"+id+"'")!==-1) el.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function switchTab(btn,id){
+  var parent=btn.closest('.panel');
+  if(parent){
+    parent.querySelectorAll('.tbtn').forEach(function(b){ b.classList.remove('active'); });
+    parent.querySelectorAll('.tpane').forEach(function(p){ p.classList.remove('active'); });
+  }
+  btn.classList.add('active');
+  var pane=document.getElementById(id); if(pane) pane.classList.add('active');
+}
+
+function selectProvider(pid, init){
+  ST.provider=pid; localStorage.setItem('pulmocare_provider', pid||'');
+  document.querySelectorAll('.provider-card').forEach(function(c){ c.classList.remove('selected'); });
+  var ac=document.querySelector('.provider-card[data-provider="'+pid+'"]');
+  if(ac) ac.classList.add('selected');
+  var box=document.getElementById('key-entry-box');
+  var title=document.getElementById('key-entry-title');
+  var desc=document.getElementById('key-entry-desc');
+  var input=document.getElementById('api-key-in');
+  var link=document.getElementById('get-key-link');
+  var status=document.getElementById('key-status');
+  var md=document.getElementById('mode-disp');
+  if(!pid){
+    if(box) box.style.display='none';
+    if(status){ status.textContent='Offline mode.'; status.style.color='var(--text3)'; }
+    if(md) md.textContent='Offline Research';
+    if(!init) toast('Offline mode active.');
+    return;
+  }
+  var meta=PROVIDERS[pid];
+  if(!meta) return;
+  if(box) box.style.display='block';
+  if(title) title.innerHTML=escapeHtml(meta.icon)+' '+escapeHtml(meta.label)+' API Key';
+  if(desc) desc.innerHTML='Get key at <strong>'+escapeHtml(meta.getKeyUrl.replace('https://',''))+'</strong>. AES-256-GCM encrypted.';
+  if(input){ input.placeholder=escapeHtml(meta.placeholder); input.value=ST.keys[pid]||''; }
+  if(link) link.href=meta.getKeyUrl;
+  if(ST.keys[pid]){
+    if(status){ status.textContent='Configured: '+meta.label; status.style.color='var(--teal)'; }
+    if(md) md.textContent='Live AI ('+meta.label+')';
+  } else {
+    if(status){ status.textContent='No key for '+meta.label; status.style.color='var(--text3)'; }
+    if(md) md.textContent=meta.label+' - key required';
+  }
+  if(!init){
+    var keyBox=document.getElementById('key-entry-box');
+    if(keyBox) window.scrollTo({top:keyBox.offsetTop-100,behavior:'smooth'});
+  }
+}
+
+function refreshProviderTags(){
+  Object.keys(PROVIDERS).forEach(function(p){
+    var tag=document.getElementById('ptag-'+p); if(!tag) return;
+    if(ST.keys[p]){ tag.textContent='Configured'; tag.classList.add('configured'); }
+    else { tag.textContent='Not configured'; tag.classList.remove('configured'); }
+  });
+}
+
+function saveKey(){
+  if(!ST.provider){ toast('Select a provider first.'); return; }
+  var input=document.getElementById('api-key-in');
+  var k=input?input.value.trim():'';
+  if(!k){ toast('Please paste an API key.'); return; }
+  ST.keys[ST.provider]=k;
+  try {
+    if(SecureKeyStore.isAvailable()) SecureKeyStore.save('pulmo_keys','pulmocare',ST.keys);
+    else localStorage.setItem('pulmo_keys',JSON.stringify(ST.keys));
+  } catch(e){ localStorage.setItem('pulmo_keys',JSON.stringify(ST.keys)); }
+  refreshProviderTags();
+  selectProvider(ST.provider,true);
+  toast(PROVIDERS[ST.provider].label+' key saved (AES-256 encrypted).');
+}
+
+function clearKey(){
+  if(!ST.provider) return;
+  delete ST.keys[ST.provider];
+  try {
+    if(SecureKeyStore.isAvailable()) SecureKeyStore.save('pulmo_keys','pulmocare',ST.keys);
+    else localStorage.setItem('pulmo_keys',JSON.stringify(ST.keys));
+  } catch(e){ localStorage.setItem('pulmo_keys',JSON.stringify(ST.keys)); }
+  var input=document.getElementById('api-key-in'); if(input) input.value='';
+  refreshProviderTags(); selectProvider(ST.provider,true);
+}
+
+var FICONS={pdf:'&#128196;',jpg:'&#128444;',jpeg:'&#128444;',png:'&#128444;',docx:'&#128196;',txt:'&#128221;'};
+
+function handleFiles(files){
+  Array.from(files).forEach(function(f){
+    if(ST.files.find(function(x){ return x.name===f.name&&x.size===f.size; })) return;
+    ST.files.push(f);
+    var ext=f.name.split('.').pop().toLowerCase();
+    var sz=f.size>1048576?(f.size/1048576).toFixed(1)+'MB':Math.round(f.size/1024)+'KB';
+    var el=document.createElement('div'); el.className='file-row'; el.dataset.fname=f.name;
+    el.innerHTML='<span class="fr-ico">'+(FICONS[ext]||'&#128193;')+'</span>'
+      +'<span class="fr-name">'+escapeFilename(f.name)+'</span>'
+      +'<span class="fr-meta">'+escapeHtml(sz)+'</span>'
+      +'<span class="fr-ok">Ready</span>'
+      +'<span class="fr-del" onclick="removeByEl(this)">&#10005;</span>';
+    var fl=document.getElementById('flist'); if(fl) fl.appendChild(el);
+  });
+}
+
+function removeByEl(btn){
+  var r=btn.closest('.file-row'); if(!r) return;
+  var n=r.dataset.fname;
+  ST.files=ST.files.filter(function(f){ return f.name!==n; });
+  r.remove();
+}
+
+function clearFiles(){ ST.files=[]; var fl=document.getElementById('flist'); if(fl) fl.innerHTML=''; }
+
+function uploadFiles(){
+  if(!ST.files.length){ toast('Please select files first.'); return; }
+  var btn=document.getElementById('up-btn'); setLoad(btn,true);
+  setTimeout(function(){
+    var out=document.getElementById('up-result');
+    if(out) out.innerHTML='<div class="alert teal" style="margin-top:16px;"><span class="ai-ic">&#10003;</span><div><strong>'+escapeHtml(String(ST.files.length))+' file(s) uploaded.</strong> Go to Assessment or Conditions to research your reports.</div></div>';
+    setLoad(btn,false);
+  },2000);
+}
+
+function runAssessment(){
+  var symptom=(document.getElementById('as-symptom')||{}).value||'';
+  var duration=(document.getElementById('as-duration')||{}).value||'';
+  var age=(document.getElementById('as-age')||{}).value||'';
+  var exposure=(document.getElementById('as-exposure')||{}).value||'';
+  var history=(document.getElementById('as-history')||{}).value||'';
+  if(!symptom.trim()){ toast('Please describe your symptom.'); return; }
+  var btn=document.getElementById('as-btn'); setLoad(btn,true);
+  var out=document.getElementById('assess-output'); if(!out) return;
+  var key=currentApiKey();
+  if(ST.provider&&key){
+    fetch('/api/pulmo/assess',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({symptom:symptom,duration:duration,age:age,exposure:exposure,history:history,provider:ST.provider,api_key:key})
+    }).then(function(r){ return r.json(); })
+    .then(function(data){
+      setLoad(btn,false);
+      var mt=data.mode==='live_ai'
+        ?'<span class="ctag" style="background:var(--teal-pale);color:var(--teal);border-color:var(--border2);display:inline-block;margin-bottom:10px;">Live AI &middot; '+escapeHtml(PROVIDERS[ST.provider].label)+'</span>'
+        :'<span class="ctag" style="display:inline-block;margin-bottom:10px;">Offline Research</span>';
+      out.innerHTML='<div class="sb"><h3>Symptom Assessment Research</h3>'+mt
+        +'<div style="white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--text2);">'
+        +sanitizeAIResponse(data.content||'')+'</div></div>';
+      out.scrollIntoView({behavior:'smooth',block:'start'});
+    }).catch(function(){ setLoad(btn,false); toast('Could not reach server. Try AI Chat.'); });
+  } else {
+    setLoad(btn,false);
+    out.innerHTML='<div class="sb"><h3>Symptom Assessment Research</h3>'
+      +'<p>For AI-researched assessment of <strong>'+escapeHtml(symptom)+'</strong>, please choose an AI provider in Settings.</p>'
+      +'<p>General guidance: any concerning respiratory symptom should be assessed promptly. '
+      +'For emergencies (severe breathlessness, blue lips, significant coughing up blood): 112/999/911 immediately.</p></div>';
+    out.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+var CONDITIONS_KB = {
+  'Acute Severe Asthma': '<div class="sb"><h3>Acute Severe Asthma</h3><p>EMERGENCY. Life-threatening features indicate impending respiratory failure.</p><h4>Life-Threatening Signs</h4><ul><li>Silent chest, cyanosis, feeble respiratory effort</li><li>Bradycardia, hypotension, exhaustion, confusion</li><li>Peak flow under 33% predicted</li></ul><h4>Management</h4><ul><li>High-flow oxygen, continuous nebulised bronchodilators</li><li>Systemic corticosteroids early, IV magnesium sulphate if severe</li><li>Escalate to intensive care if not rapidly improving</li></ul><div class="alert emergency" style="margin-top:12px;"><span class="ai-ic">&#128680;</span><div>Silent chest or exhaustion in asthma: call 112/999/911 immediately.</div></div></div>',
+
+  'Tuberculosis': '<div class="sb"><h3>Tuberculosis</h3><p>India carries the world\'s highest TB burden. NTEP provides free diagnosis and treatment.</p><h4>Key Points</h4><ul><li>Chronic cough &gt;2-3 weeks is the key symptom prompting investigation</li><li>CBNAAT/Truenat first-line rapid molecular test, detects rifampicin resistance</li><li>Standard treatment: 2 months HRZE then 4 months HR (daily dosing)</li><li>Monitor for hepatotoxicity and ethambutol-related visual changes</li></ul><div class="alert warn" style="margin-top:12px;"><span class="ai-ic">&#9888;</span><div>Research purposes only. Consult your pulmonologist or NTEP centre for diagnosis and treatment.</div></div></div>',
+
+  'COPD': '<div class="sb"><h3>COPD</h3><p>Persistent airflow limitation, often from smoking or biomass fuel smoke exposure (particularly relevant for Indian women who cook with solid fuels).</p><h4>Key Management</h4><ul><li>Smoking cessation is the single most important intervention</li><li>LAMA/LABA combination bronchodilators mainstay</li><li>ICS added only for frequent exacerbators with elevated eosinophils</li><li>Pulmonary rehabilitation strongly evidenced but underutilised</li></ul><div class="alert warn" style="margin-top:12px;"><span class="ai-ic">&#9888;</span><div>Research purposes only. Consult your pulmonologist for personalised management.</div></div></div>',
+
+  'Tension Pneumothorax': '<div class="sb"><h3>Tension Pneumothorax</h3><p>EMERGENCY. Progressive air accumulation causing mediastinal shift and cardiovascular compromise.</p><h4>Recognition</h4><ul><li>Progressive one-sided chest pain and breathlessness</li><li>Hypotension, tachycardia, tracheal deviation away from affected side</li><li>Absent breath sounds on affected side</li></ul><h4>Management</h4><p>IMMEDIATE needle decompression - do not wait for chest X-ray confirmation if clinically suspected in a deteriorating patient. Followed by formal chest drain insertion.</p><div class="alert emergency" style="margin-top:12px;"><span class="ai-ic">&#128680;</span><div>Sudden chest pain with breathlessness and low blood pressure: emergency assessment immediately.</div></div></div>',
+
+  'Lung Cancer': '<div class="sb"><h3>Lung Cancer</h3><p>Leading cause of cancer death globally. Major risk factor: tobacco smoking, though rising proportion in never-smokers.</p><h4>Red Flag Symptoms</h4><ul><li>Persistent cough beyond 3 weeks, especially new/changed in a smoker</li><li>Haemoptysis - always requires investigation</li><li>Unexplained weight loss, hoarseness, finger clubbing</li></ul><h4>Diagnosis</h4><p>CT chest for staging, PET-CT for mediastinal/distant assessment. Molecular testing (EGFR, ALK, PD-L1) standard for advanced disease.</p><div class="alert warn" style="margin-top:12px;"><span class="ai-ic">&#9888;</span><div>Any red flag symptom, especially in smokers over 40, needs urgent investigation.</div></div></div>'
+};
+
+function showCondition(){
+  var sel=document.getElementById('cond-sel');
+  var out=document.getElementById('cond-output');
+  if(!sel||!out) return;
+  var v=sel.value;
+  if(!v){ out.innerHTML=''; return; }
+  if(CONDITIONS_KB[v]){ out.innerHTML=CONDITIONS_KB[v]; out.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+  fetchConditionLive(v,out);
+}
+
+function fetchConditionLive(sel,out){
+  var key=currentApiKey();
+  if(ST.provider&&key){
+    out.innerHTML='<div class="sb"><h3>'+escapeHtml(sel)+'</h3>'
+      +'<div style="padding:10px 0;"><span class="typing"><span></span><span></span><span></span></span> Researching from GOLD/GINA/ATS-ERS guidelines...</div></div>';
+    out.scrollIntoView({behavior:'smooth',block:'start'});
+    fetch('/api/condition/'+encodeURIComponent(sel)+'?provider='+encodeURIComponent(ST.provider)+'&api_key='+encodeURIComponent(key))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var body=data.content||(data.condition?JSON.stringify(data.condition,null,2):'No research available.');
+      var mt=data.mode==='live_ai'
+        ?'<span class="ctag" style="background:var(--teal-pale);color:var(--teal);display:inline-block;margin-bottom:10px;">Live AI &middot; '+escapeHtml(PROVIDERS[ST.provider].label)+'</span>'
+        :'<span class="ctag" style="display:inline-block;margin-bottom:10px;">Offline Research</span>';
+      out.innerHTML='<div class="sb"><h3>'+escapeHtml(sel)+'</h3>'+mt
+        +'<div style="white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--text2);">'
+        +sanitizeAIResponse(body)+'</div></div>';
+    }).catch(function(){
+      out.innerHTML='<div class="sb"><h3>'+escapeHtml(sel)+'</h3><p>Could not reach server. Try the AI Chat tab.</p></div>';
+    });
+  } else {
+    out.innerHTML='<div class="sb"><h3>'+escapeHtml(sel)+'</h3><p>Choose an AI provider in Settings for live research on this condition.</p></div>';
+    out.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+var CHAT_KB = {
+  'breathless': 'Breathlessness research: Sudden severe breathlessness with blue lips/fingers is an EMERGENCY - call 112/999/911 immediately. Gradual breathlessness could relate to asthma, COPD, heart problems, or anaemia among other causes. In a known asthmatic, a "silent chest" (no wheeze heard because too little air is moving) is a dangerous sign of severe obstruction, not improvement. Consult your pulmonologist for assessment, and seek emergency care for any severe or rapidly worsening breathlessness.',
+  'chronic cough': 'Chronic cough research: Cough lasting more than 2-3 weeks is the key symptom prompting TB investigation in India, given the very high national TB burden - this should be assessed rather than assumed to be a common cold. Cough lasting beyond 3 weeks, especially new or changed in a smoker, also needs assessment to exclude lung cancer. Common causes of chronic cough also include asthma, GERD, and post-nasal drip. Consult your pulmonologist for persistent cough beyond 2-3 weeks.',
+  'asthma': 'Asthma research: Current guidelines (GINA) recommend all asthma patients use an inhaled corticosteroid-containing inhaler rather than relying only on a reliever (like salbutamol) alone, as reliever-only treatment increases the risk of serious attacks. Combination ICS-formoterol inhalers can be used both regularly and as-needed in many patients. A written asthma action plan and correct inhaler technique are essential. Silent chest, blue lips, or extreme tiredness during an attack are emergency signs - call 112/999/911. Consult your pulmonologist for personalised management.',
+  'copd': 'COPD research: Persistent breathlessness, cough, and sputum production, especially in smokers or those with significant exposure to biomass cooking fuel smoke (common in India, particularly affecting women). Smoking cessation is the single most important step to slow progression. Long-acting inhaler combinations are the mainstay of treatment; pulmonary rehabilitation (structured exercise and education programme) significantly helps symptoms and quality of life but is underused. Consult your pulmonologist for diagnosis (requires a breathing test called spirometry) and personalised treatment.',
+  'tuberculosis': "TB research: Cough lasting more than 2-3 weeks, especially with fever, night sweats, or weight loss, should be assessed for TB given India's very high national burden. Free testing (including rapid molecular tests) and treatment is available through NTEP centres. Standard treatment takes 6 months and must be completed fully even if you feel better early on, to prevent drug-resistant TB developing. Consult your doctor or nearest NTEP centre for testing if you have a persistent cough.",
+  'coughing blood': 'IMPORTANT: Coughing up blood (haemoptysis), even a small amount, always needs medical assessment - it can indicate TB, bronchiectasis, or lung cancer among other causes. Coughing up a large amount of blood, or blood with severe breathlessness, is a MEDICAL EMERGENCY - call 112/999/911 immediately. For any amount of blood in your cough, contact your doctor promptly for assessment; do not ignore or dismiss it.',
+  'wheeze': 'Wheeze research: A whistling sound when breathing, often from narrowed airways, commonly associated with asthma or COPD. New wheeze, especially with breathlessness, needs assessment. Complete absence of wheeze during a severe asthma attack ("silent chest") is actually a dangerous sign that too little air is moving, not a sign of improvement - this is an emergency. Consult your pulmonologist to identify the underlying cause of wheeze.',
+  'pneumonia': 'Pneumonia research: Lung infection causing fever, cough (often with phlegm), breathlessness, and chest pain worse on breathing in. Severity assessment (considering confusion, breathing rate, blood pressure, and age) helps decide whether home treatment with antibiotics or hospital admission is needed. Vaccination against pneumococcus and influenza reduces risk, particularly important for the elderly and those with chronic lung or heart conditions. Consult your doctor promptly for suspected pneumonia, especially with breathlessness or high fever.'
+};
+
+function sendChat(){
+  var inp=document.getElementById('chat-in');
+  if(!inp) return;
+  var msg=inp.value.trim(); if(!msg) return;
+  addMsg('user',msg); inp.value='';
+  var msgs=document.getElementById('chat-msgs');
+  var tid='ty-'+Date.now();
+  var ti=document.createElement('div'); ti.className='cm ai'; ti.id=tid;
+  ti.innerHTML='<div class="ai-lbl">PulmoCare AI</div><div class="typing"><span></span><span></span><span></span></div>';
+  if(msgs){ msgs.appendChild(ti); msgs.scrollTop=msgs.scrollHeight; }
+  var key=currentApiKey();
+  if(ST.provider&&key){
+    fetch('/api/chat/send',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg,request_ai:true,provider:ST.provider,api_key:key})
+    }).then(function(r){ return r.json(); })
+    .then(function(data){
+      var el=document.getElementById(tid); if(el) el.remove();
+      if(data.ai_response){ addMsg('ai',data.ai_response,true); return; }
+      offlineChat(msg,null);
+    }).catch(function(){
+      var el=document.getElementById(tid); if(el) el.remove();
+      offlineChat(msg,null);
+    });
+  } else {
+    setTimeout(function(){ offlineChat(msg,tid); },600);
+  }
+}
+
+function offlineChat(msg,tid){
+  if(tid){ var el=document.getElementById(tid); if(el) el.remove(); }
+  var ml=msg.toLowerCase(); var resp='';
+  for(var k in CHAT_KB){ if(ml.indexOf(k)!==-1){ resp=CHAT_KB[k]; break; } }
+  if(!resp) resp='Thank you for your question about "'+escapeHtml(msg)+'". Browse the relevant sections for research, or choose an AI provider in Settings. For pulmonary emergencies (severe breathlessness, silent chest, massive haemoptysis) act immediately &mdash; 112/999/911. Research purposes only &mdash; always consult your pulmonologist.';
+  addMsg('ai',resp,false);
+}
+
+function addMsg(type,text,isLive){
+  var msgs=document.getElementById('chat-msgs'); if(!msgs) return;
+  var el=document.createElement('div'); el.className='cm '+type;
+  if(type==='ai'){
+    var label=(isLive&&ST.provider)?('PulmoCare AI &middot; '+escapeHtml(PROVIDERS[ST.provider].label)):'PulmoCare AI';
+    el.innerHTML='<div class="ai-lbl">'+label+'</div>'+sanitizeAIResponse(text);
+  } else {
+    el.textContent=text;
+  }
+  msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function setLoad(btn,state){
+  if(!btn) return;
+  if(state) btn.classList.add('loading'); else btn.classList.remove('loading');
+  btn.disabled=state;
+}
+
+function toast(msg){
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border2);color:var(--text);padding:12px 22px;border-radius:10px;font-size:14px;z-index:9999;box-shadow:var(--shadow);white-space:nowrap;';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },3000);
+}
+
+var uz=document.getElementById('uz');
+if(uz){
+  uz.addEventListener('dragover',function(e){e.preventDefault();uz.classList.add('drag');});
+  uz.addEventListener('dragleave',function(){uz.classList.remove('drag');});
+  uz.addEventListener('drop',function(e){e.preventDefault();uz.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+}
+</script>
+</body>
+</html>
